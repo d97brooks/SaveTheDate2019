@@ -3,18 +3,13 @@ var bodyParser = require('body-parser');
 let cookieParser = require('cookie-parser'); 
 var express = require("express");
 var app = express();
-var code = "XXXXXXX" // code that will go on the invitations
+var code = "MOKI2019" // code that will go on the invitations
+var admin = "secret"
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(cookieParser());
 
 // method to just check input agianst our code
-function validateCode(input){
-    if(input == code){
-        return true;
-    }else{
-        return false;
-    }
-}
+
 // main!
 app.listen(8080, function(){
     console.log("Server Running...");
@@ -47,7 +42,7 @@ app.listen(8080, function(){
     // unless I actually decide to deploy this site, in which case
     // I should probably everything more secure...
     app.post("/login", function(req,res){
-        if(validateCode(req.body.code)){
+        if(req.body.code == code){
             res.cookie("code", code);
             res.redirect("/SaveTheDate2019");   
         }else{
@@ -74,14 +69,22 @@ app.listen(8080, function(){
     // ATTENDING
     app.post("/RSVP", function(req, res){
     //  Access the forms via express parsing. testing was done here  
-    // TODO:
+    // TODO: | DONE!
     // LOG DATA TO A JSON FILE AND CREATE AN ADMIN PAGE
     // TO VIEW THE DATA, DOESNT HAVE TO BE PRETTY,
     // JUST SOMETHING WE CAN USE TO KEEP TRACK. 
+        fs.readFile("guests.json", function(err, data){
+            var json = JSON.parse(data);
+            var guest = { name: req.body.name , seats: req.body.number, email: req.body.email };
+            json.guest.push(guest);
+            fs.writeFile('guests.json', JSON.stringify(json), function (err){
+                if(err) throw err;
+            });
+        })
         var str = "Name: " + req.body.name;
         str += "<br>Attending: " + req.body.number;
         str += "<br>Email: " + req.body.email;
-        str += "<br>Thanks for filling out the RSVP! It helps us a lot and we greatly appreciate it!";
+        str += "<br>Thanks for filling out the RSVP, " + req.body.name + "! It helps us a lot and we greatly appreciate it!";
         str += "<br> If you see anything wrong with the data you entered, contant me via email at dalbroo@siue.edu and I will gladly fix it for you."; 
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(str);
@@ -89,9 +92,17 @@ app.listen(8080, function(){
     })
     // NOT ATTENDING
     app.post("/RSVP0", function(req, res){
-        // TODO:
-        // LOG NAME AND 'NOT ATTENDING' TO JSON DATA FILE
-        var str = "Thanks for filling out the RSVP," + req.body.name + "! It helps us a lot and we greatly appreciate it!";
+        // LOG NAME AND 'NOT ATTENDING' TO JSON DATA FILE | DONE!
+        fs.readFile("guests.json", function(err, data){
+            var json = JSON.parse(data);
+            var guest = {name: req.body.name};
+            json.noGo.push(guest);
+            fs.writeFile('guests.json', JSON.stringify(json), function (err){
+                if(err) throw err;
+            });
+        })
+        // Send thank you...
+        var str = "Thanks for filling out the RSVP, " + req.body.name + "! It helps us a lot and we greatly appreciate it!";
         str += "<br>If plan's change and you are able to come, just contact me via email at dalbroo@siue.edu and I would gladly add you to the list!";
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(str);
@@ -120,6 +131,34 @@ app.listen(8080, function(){
         var img = fs.readFileSync('images/fourth_image.jpg');
         res.writeHead(200, {'Content-Type': 'image/gif' });
         res.end(img, 'binary');
+    })
+
+    // admin page to display guests
+    app.get("/admin", function(req,res){
+        fs.readFile("html/admin_login.html", function(err, data){
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(data);
+            res.end();  
+        })
+    })
+    app.post("/admin", function(req, res){
+        if(req.body.code === admin){
+            // right code
+            fs.readFile("html/admin.html", function(err, data){
+                res.writeHead(200, {'Content-Type': 'text/html'});
+                res.write(data);
+                res.end();   
+              })  
+        }else{
+            // entered wrong code. just redirecting back to the page
+            res.redirect("/admin");
+        }
+    })
+    app.get("/guests.json", function(req, res){
+        fs.readFile('./guests.json', (err, json) => {
+            let obj = JSON.parse(json);
+            res.json(obj);
+        });
     })
     
 });
