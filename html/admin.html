@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Save The Date Login</title>
+        <style>
+            /* borrowed css to make easier on me */
+                table {
+                  font-family: arial, sans-serif;
+                  border-collapse: collapse;
+                  width: 100%;
+                }
+                
+                td, th {
+                  border: 1px solid #dddddd;
+                  text-align: left;
+                  padding: 8px;
+                }
+                
+                tr:nth-child(even) {
+                  background-color: #dddddd;
+                }
+                </style>
+    </head>
+    <body style="background-color: #ffe7e7">
+        <main>
+            <div style="margin-top: 10%; position: left; text-align: left">
+                <h2>Guest List:</h2>
+                <p>Total Seats Reserved: <i id ="total"></i></p>
+                    <table id = "table" style="position: center; text-align: center">
+                            <tr>
+                            <th>Name(s)</th>
+                            <th>Seats</th>
+                            <th>Email</th>
+                            </tr>
+            </div>
+        </main>
+    </body>
+</html>
+
+<script>
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var myObj = JSON.parse(this.responseText);
+            var guests = myObj["guest"];
+            var table = document.getElementById("table");
+            var totalSeats = 0;
+            for(var i = 0; i < guests.length; i++){
+                var row = table.insertRow(i+1);
+                var name = row.insertCell(0);
+                var seats = row.insertCell(1);
+                var email = row.insertCell(2);
+                name.innerHTML = guests[i].name;
+                seats.innerHTML = guests[i].seats;
+                totalSeats += parseInt(guests[i].seats);
+                email.innerHTML = guests[i].email;
+            }
+        }
+        document.getElementById("total").innerHTML = totalSeats;
+    }
+    xmlhttp.open("GET", "/guests.json", true);
+    xmlhttp.send();
+</script>

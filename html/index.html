@@ -1,3 +1,14 @@
+
+<!--
+  Author: Dalton Brooks
+  File: index.html
+  Notes:
+    -Wedding Invitation Index-
+    I borrowed a template page from W3schools for this,
+    however, the server this is served by and takes the data is fully written by me,
+    along with the admin and 'login' pages and the submit forms to gather the data.
+
+-->
 <!DOCTYPE html>
 <html>
 <title>Dalton and Lauren</title>
@@ -14,8 +25,8 @@ p {line-height: 2}
   background-position: center;
   background-size: cover;
 }
-.bgimg {background-image: url("http://localhost:8080/first_image.jpg")}
-.bgimg2 {background-image: url("http://localhost:8080/third_image.jpg")}
+.bgimg {background-image: url("/first_image.jpg")}
+.bgimg2 {background-image: url("/third_image.jpg")}
 </style>
 <body>
 
@@ -42,7 +53,7 @@ p {line-height: 2}
 <div class="w3-container w3-padding-64 w3-pale-red w3-grayscale-min" id="us">
   <div class="w3-content">
     <h1 class="w3-center w3-text-grey"><b>Dalton & Lauren</b></h1>
-    <img class="w3-round w3-grayscale-min" src="http://localhost:8080/second_image.jpg" style="width:100%;margin:32px 0">
+    <img class="w3-round w3-grayscale-min" src="/second_image.jpg" style="width:100%;margin:32px 0">
     <p><i>Blah blah jargin whatever you want to say here... stuff about us yada yada</i>
     </p><br>
     <p class="w3-center"><a href="#wedding" class="w3-button w3-black w3-round w3-padding-large w3-large">Wedding Details</a></p>
@@ -61,7 +72,7 @@ p {line-height: 2}
 <div class="w3-container w3-padding-64 w3-pale-red w3-grayscale-min w3-center" id="wedding">
   <div class="w3-content">
     <h1 class="w3-text-grey"><b>THE WEDDING</b></h1>
-    <img class="w3-round-large w3-grayscale-min" src="http://localhost:8080/fourth_image.jpg" style="width:100%;margin:64px 0">
+    <img class="w3-round-large w3-grayscale-min" src="/fourth_image.jpg" style="width:100%;margin:64px 0">
     <div class="w3-row">
       <div class="w3-half">
         <h2>When</h2>
@@ -96,7 +107,7 @@ p {line-height: 2}
         <input id = "name" class="w3-input w3-border" type="text" placeholder="Name(s)" name="name">
         <input id = "number" class="w3-input w3-border" type="number" min="0" max="5" placeholder="Number of attendees" name="number" />
         <input id= "email" class="w3-input w3-border" type="email" placeholder="email@example.com  -  For a reminder!" name="email"/> 
-        <i>If you need more seats than 5, please contact us :)</i>
+        <i>If you need more seats than 5, please contact us :) We have limited seating</i>
       <p><i>Sincerely, Dalton & Lauren</i></p>
       <div class="w3-row">
         <div class="w3-half">         
