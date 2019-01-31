@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 let cookieParser = require('cookie-parser'); 
 var express = require("express");
 var app = express();
-var code = "MOKI2019" // code that will go on the invitations
+var code = "XXXXXXXX" // code that will go on the invitations
 var admin = "secret"
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(cookieParser());
