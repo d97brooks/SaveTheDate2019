@@ -5,10 +5,40 @@ var express = require("express");
 var app = express();
 var code = "XXXXXXXX" // code that will go on the invitations
 var admin = "secret"
+var nodemailer = require('nodemailer');
+
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(cookieParser());
 
-// method to just check input agianst our code
+// send a thank you email...
+function rsvpResponse(email){
+if(email == ""){
+    console.log("No Email Entered")
+}else{
+    var transporter = nodemailer.createTransport({
+    service: 'gmail',
+        auth: {
+        user: 'mysite@gmail.com',
+        pass: 'mypassword'
+  }
+});
+
+var mailOptions = {
+  from: 'mysite@gmail.com',
+  to: email,
+  subject: 'RSVP Confirmation',
+  text: 'Thanks again for RSVPing!\nWe will be sending out reminders closer to the wedding from this address.\n\n Cheers!\n Dalton & Lauren'
+};
+
+transporter.sendMail(mailOptions, function(error, info){
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('Email sent: ' + info.response);
+  }
+});
+}
+}
 
 // main!
 app.listen(8080, function(){
@@ -83,12 +113,16 @@ app.listen(8080, function(){
         })
         var str = "Name: " + req.body.name;
         str += "<br>Attending: " + req.body.number;
-        str += "<br>Email: " + req.body.email;
-        str += "<br>Thanks for filling out the RSVP, " + req.body.name + "! It helps us a lot and we greatly appreciate it!";
-        str += "<br> If you see anything wrong with the data you entered, contant me via email at dalbroo@siue.edu and I will gladly fix it for you."; 
+        if(req.body.email != "")
+            str += "<br>Email: " + req.body.email;
+        str += "<br><br>Thanks for filling out the RSVP, " + req.body.name + "! It helps us a lot and we greatly appreciate it!";
+        str += "<br> If you see anything wrong with the data you entered, contact me via email at dalbroo@siue.edu and I will gladly fix it for you."; 
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(str);
         res.end();   
+
+        //send a thankyou email
+        //rsvpResponse(req.body.email);
     })
     // NOT ATTENDING
     app.post("/RSVP0", function(req, res){
@@ -160,5 +194,4 @@ app.listen(8080, function(){
             res.json(obj);
         });
     })
-    
 });
