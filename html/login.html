@@ -17,4 +17,16 @@
             </div>
         </main>
     </body>
+<script>
+    // strip all html from input before sending to server
+    function sanitizeAllFields(){
+        document.getElementById("code").value = strip(document.getElementById("code").value);
+    }
+    // strip html from string
+    function strip(html){
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        return doc.body.textContent || "";
+    }
+</script>
+        
 </html>

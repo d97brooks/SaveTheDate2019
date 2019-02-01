@@ -111,18 +111,30 @@ p {line-height: 2}
       <p><i>Sincerely, Dalton & Lauren</i></p>
       <div class="w3-row">
         <div class="w3-half">         
-          <input type="submit" class="w3-button w3-block w3-green" value="Going!" />
+          <input type="submit" class="w3-button w3-block w3-green" value="Going!" onclick="sanitizeAllFields()" />
           </form>
         </div>
         <div class="w3-half">
-          <input type="submit" onclick="document.getElementById('number').value='0'; document.getElementById('form').action = 'RSVP0';" class="w3-button w3-block w3-red" value="Can't come" />
+          <input type="submit" onclick="sanitizeAllFields(); document.getElementById('number').value='0'; document.getElementById('form').action = 'RSVP0';" class="w3-button w3-block w3-red" value="Can't come" />
         </div>
       </form>
       </div>
     </div>
   </div>
 </div>
-
+<script>
+function sanitizeAllFields(){
+  // strip all html from input before sending to server
+  document.getElementById("name").value = strip(document.getElementById("name").value);
+  document.getElementById("number").value = strip(document.getElementById("number").value);
+  document.getElementById("email").value = strip(document.getElementById("email").value);
+}
+// strip html from string
+function strip(html){
+   var doc = new DOMParser().parseFromString(html, 'text/html');
+   return doc.body.textContent || "";
+}
+</script>
 <!-- Footer -->
 <footer class="w3-center w3-black w3-padding-16">
   Dalton & Lauren Brooks - 2019

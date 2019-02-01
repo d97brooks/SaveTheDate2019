@@ -27,12 +27,19 @@
             <div style="margin-top: 10%; position: left; text-align: left">
                 <h2>Guest List:</h2>
                 <p>Total Seats Reserved: <i id ="total"></i></p>
-                    <table id = "table" style="position: center; text-align: center">
+                    <table id = "table" style="position: center; text-align: center"> 
                             <tr>
                             <th>Name(s)</th>
                             <th>Seats</th>
                             <th>Email</th>
                             </tr>
+                    </table>
+                            <h2>Not Coming:</h2>
+                            <table id ="noGo" style="position: center; text-align: center">
+                                <tr>
+                                    <th>Name(s)</th>
+                                </tr>   
+                            </table>
             </div>
         </main>
     </body>
@@ -51,10 +58,19 @@
                 var name = row.insertCell(0);
                 var seats = row.insertCell(1);
                 var email = row.insertCell(2);
+                var checkbox = row.insertCell(3);
                 name.innerHTML = guests[i].name;
                 seats.innerHTML = guests[i].seats;
                 totalSeats += parseInt(guests[i].seats);
                 email.innerHTML = guests[i].email;
+            }
+
+            var no = myObj["noGo"];
+            var noGo = document.getElementById("noGo");
+            for(i=0; i < no.length; i++){
+                var row = noGo.insertRow(i+1);
+                var name = row.insertCell(0);
+                name.innerHTML = no[i].name;
             }
         }
         document.getElementById("total").innerHTML = totalSeats;
