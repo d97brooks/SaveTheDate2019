@@ -3,30 +3,23 @@
     <head>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Save The Date Login</title>
-        <style>
-            /* borrowed css to make easier on me */
-                table {
-                  font-family: arial, sans-serif;
-                  border-collapse: collapse;
-                  width: 100%;
-                }
-                
-                td, th {
-                  border: 1px solid #dddddd;
-                  text-align: left;
-                  padding: 8px;
-                }
-                
-                tr:nth-child(even) {
-                  background-color: #dddddd;
-                }
-                </style>
+        
     </head>
-    <body style="background-color: #ffe7e7">
+    <body style="background-color: #ffe7e7; margin: 2%;">
         <main>
-            <div style="margin-top: 10%; position: left; text-align: left">
+                <div style="margin-top: 10%; position: left; text-align: left">
+                <button id = "reminder" style = "color: grey; border-color: whitesmoke; padding: .5%; margin-bottom: .5%;" onclick="document.getElementById('emailContent').style.display = 'block'; document.getElementById('emailSubmit').style.display = 'inline'; document.getElementById('emailCancel').style.display = 'inline'; style.display='none';">email reminder</button>
+                <form onsubmit="return confirm('Are you sure you want to send?\nSubject: ' + document.getElementById('subject').value + '\n' + document.getElementById('content').value)" style = "display: none; margin-left: 2%;" id="emailContent" action="/reminder" method="POST">
+                    <h3 style="margin-left: -2%;">Email Reminder:</h3>
+                    <input id="subject" name="subject" placeholder="Subject:" type="text" /><br>
+                    <textarea style = "border-color: gray;" name = "content" id ="content" rows="20" cols="50"></textarea><br>         
+                </form>
+                <input id="emailSubmit" form="emailContent" style = "display: none; color: grey; border-color: green; padding: .5%; margin-bottom: .5%; margin-left: 2%;" type="submit" name="submit" value="Send" />
+                <button id = "emailCancel" style="display: none; color: grey; border-color: red; padding: .5%; margin-bottom: .5%;" onclick="document.getElementById('emailContent').style.display = 'none'; document.getElementById('emailSubmit').style.display = 'none'; style.display = 'none'; document.getElementById('reminder').style.display = 'inline';" >Cancel</button>
+                
                 <h2>Guest List:</h2>
                 <p>Total Seats Reserved: <i id ="total"></i></p>
+                
                     <table id = "table" style="position: center; text-align: center"> 
                             <tr>
                             <th>Name(s)</th>
@@ -43,7 +36,6 @@
             </div>
         </main>
     </body>
-</html>
 
 <script>
     var xmlhttp = new XMLHttpRequest();
@@ -78,3 +70,22 @@
     xmlhttp.open("GET", "/guests.json", true);
     xmlhttp.send();
 </script>
+<style>
+        /* borrowed css to make easier on me */
+            table {
+              font-family: arial, sans-serif;
+              border-collapse: collapse;
+              width: 100%;
+            }
+            
+            td, th {
+              border: 1px solid #dddddd;
+              text-align: left;
+              padding: 8px;
+            }
+            
+            tr:nth-child(even) {
+              background-color: pink;
+            }
+</style>
+</html>
