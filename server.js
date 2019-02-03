@@ -22,13 +22,13 @@ function rsvpResponse(address){
         var transporter = nodemailer.createTransport({
         service: 'gmail',
             auth: {
-                user: 'myemail@gmail.com',
+                user: 'me@gmail.com',
                 pass: 'pwd'
             }
         });
 
         var mailOptions = {
-            from: '<reminder@mysite.com>',
+            from: '<reminder@davis-brooks-wedding.com>',
             to: address,
             subject: 'RSVP Confirmation',
             text: 'Thanks again for RSVPing!\nWe will be sending out reminders closer to the wedding from this address.\n\n Cheers!\n Dalton & Lauren'
@@ -53,13 +53,13 @@ function reminder(address, subject, content){
         var transporter = nodemailer.createTransport({
         service: 'Gmail',
             auth: {
-                user: 'myemail@gmail.com',
+                user: 'me@gmail.com',
                 pass: 'pwd'
             }
         });
     
         var mailOptions = {
-            from: '<reminder@mysite.com>',
+            from: '<reminder@davis-brooks-wedding.com>',
              to: address,
              subject: subject,
               text: content
@@ -267,6 +267,20 @@ app.listen(8080, function(){
         }else{
             res.writeHead(200, {'Content-Type': 'text/html'});
             res.write("Error: Subject or Contents of email was empty.");
+            res.end();
+        }
+    })
+
+    app.post("/update", function(req, res){
+        if(req.cookies.code != adminHash){
+            res.redirect("/admin");
+        }else{
+            fs.writeFile('guests.json', req.body.guests, function (err){
+                if(err) throw err;
+            });
+                
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(req.body.guests);
             res.end();
         }
     })
