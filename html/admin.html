@@ -78,6 +78,11 @@
         var button = document.createElement("button");
         var cancel = document.createElement("input");
         var submit = document.createElement("input");
+        var add = document.createElement("button");
+        add.style = 'color: grey; border-color: whitesmoke; display: inline; padding:.5%; float: right;';
+        add.value = "Add Guest";
+        add.id = "addButton";
+        add.innerText = "Add Guest";
         button.type = 'button';
         button.value = 'Edit';
         button.innerText='Edit Table Contents';
@@ -93,11 +98,28 @@
         cancel.style.display = 'none';
         submit.style.display = 'none';
         button.style = 'color: grey; border-color: whitesmoke; display: inline; padding:.5%; float: right;';
+        add.onclick = function(){
+            var next = document.getElementById('table').rows.length;
+            var row = document.getElementById('table').insertRow(next);
+            next = next-1;
+            var name = row.insertCell(0);
+            name.id = 'name' + next;
+            var seats = row.insertCell(1);
+            seats.id = 'seats' + next;
+            var email = row.insertCell(2);
+            email.id = 'email' + next;
+
+            name.innerHTML="<input id ='inputName" + next+"' type='text' form='editTable' value='"+document.getElementById('name'+next).innerHTML+ "' />";
+            seats.innerHTML="<input id ='inputSeats" + next+"' type='text' form='editTable' value='"+document.getElementById('seats'+next).innerHTML+ "' />";
+            email.innerHTML="<input id ='inputEmail" + next+"' type='text' form='editTable' value='"+document.getElementById('email'+next).innerHTML+ "' />";
+            
+       }
         button.onclick = function(){
             for(var i = 0; i < document.getElementById('table').rows.length - 1; i++){
                 document.getElementById('name'+i).innerHTML = "<input id ='inputName" + i+"' type='text' form='editTable' value='"+document.getElementById('name'+i).innerHTML+ "' />";
                 document.getElementById('seats'+i).innerHTML = "<input id ='inputSeats" + i+"' type='text' form='editTable' value='"+document.getElementById('seats'+i).innerHTML+ "' />";
                 document.getElementById('email'+i).innerHTML = "<input id ='inputEmail" + i+"' type='text' form='editTable' value='"+document.getElementById('email'+i).innerHTML+ "' />";
+                
             }
             for(var i = 0; i<document.getElementById('noGo').rows.length-1; i++){
                 document.getElementById('noGo'+i).innerHTML = "<input id ='inputNoGoName" + i+"' type='text' form='editTable' value='"+document.getElementById('noGo'+i).innerHTML+ "' />";
@@ -105,32 +127,48 @@
                 document.getElementById('cancel').style.display = 'inline';
                 document.getElementById('editSubmit').style.display = 'inline';
                 document.getElementById('editTableButton').style.display = 'none';
+                document.getElementById('table').appendChild(add);
+                // var row = document.getElementById('table').insertRow(document.getElementById('table').rows.length)
             };
         cancel.onclick = function(){
             for(var i = 0; i < guests.length; i++){
                 document.getElementById('name'+i).innerHTML = guests[i].name;
                 document.getElementById('seats'+i).innerHTML = guests[i].seats;
                 document.getElementById('email'+i).innerHTML = guests[i].email;
-                document.getElementById('cancel').style.display = 'none';
-                document.getElementById('editSubmit').style.display = 'none';
-                document.getElementById('editTableButton').style.display = 'block';
-            }
+                }
+            
             for(var i = 0; i<document.getElementById('noGo').rows.length-1; i++){
                 document.getElementById('noGo'+i).innerHTML = document.getElementById('inputNoGoName'+i).value;
             }
+            document.getElementById('cancel').style.display = 'none';
+            document.getElementById('editSubmit').style.display = 'none';
+            document.getElementById('editTableButton').style.display = 'block';
+            
+            
         };
         submit.onclick = function(){
             myObj = {'guests':'','guest':[],'noGo':[]};
             
             for(var i = 0; i < document.getElementById('table').rows.length - 1; i++){
                 var name = document.getElementById('inputName'+i).value;
-                var seats = document.getElementById('inputSeats'+i).value;
-                var email = document.getElementById('inputEmail'+i).value;
-                myObj["guest"].push({name: name, seats: seats, email: email});
+                if(name == ""){
+                    // remove from table
+                    // i.e. just dont add on rebuild
+                }else{                
+                    var seats = document.getElementById('inputSeats'+i).value;
+                    if(seats == "0" || seats == ""){
+                        myObj["noGo"].push({name: name});
+                    }else{
+                        var email = document.getElementById('inputEmail'+i).value;
+                        myObj["guest"].push({name: name, seats: seats, email: email});
+                    }
+                }
             }
             
             for(var i = 0; i < document.getElementById('noGo').rows.length - 1; i++){
-                myObj["noGo"].push({name: document.getElementById('inputNoGoName'+i).value});
+                var name = document.getElementById('inputNoGoName'+i).value
+                if(name != "")
+                    myObj["noGo"].push({name: name});
             }
             document.getElementById('guests').value = JSON.stringify(myObj);
             //alert(document.getElementById('guests').value);
