@@ -8,7 +8,7 @@
     <body style="background-color: #ffe7e7; margin: 2%;">
         <main>
                 <div style="margin-top: 10%; position: left; text-align: left">
-                <button id = "reminder" style = "color: grey; border-color: whitesmoke; padding: .5%; margin-bottom: .5%;" onclick="document.getElementById('emailContent').style.display = 'block'; document.getElementById('emailSubmit').style.display = 'inline'; document.getElementById('emailCancel').style.display = 'inline'; style.display='none';">email reminder</button>
+                <button id = "reminder" style = "float: right; color: grey; border-color: whitesmoke; padding: .5%; margin-bottom: .5%;" onclick="document.getElementById('emailContent').style.display = 'block'; document.getElementById('emailSubmit').style.display = 'inline'; document.getElementById('emailCancel').style.display = 'inline'; style.display='none';">Compose Reminder Email</button>
                 <form onsubmit="return confirm('Are you sure you want to send?\nSubject: ' + document.getElementById('subject').value + '\n' + document.getElementById('content').value)" style = "display: none; margin-left: 2%;" id="emailContent" action="/reminder" method="POST">
                     <h3 style="margin-left: -2%;">Email Reminder:</h3>
                     <input id="subject" name="subject" placeholder="Subject:" type="text" /><br>
@@ -17,6 +17,9 @@
                 <input id="emailSubmit" form="emailContent" style = "display: none; color: grey; border-color: green; padding: .5%; margin-bottom: .5%; margin-left: 2%;" type="submit" name="submit" value="Send" />
                 <button id = "emailCancel" style="display: none; color: grey; border-color: red; padding: .5%; margin-bottom: .5%;" onclick="document.getElementById('emailContent').style.display = 'none'; document.getElementById('emailSubmit').style.display = 'none'; style.display = 'none'; document.getElementById('reminder').style.display = 'inline';" >Cancel</button>
                 
+                <form name="editTable" id="editTable" method="POST" action="/update" onsubmit="return confirm('Are you sure you want to send these updates?')">
+                <input type="hidden" name="guests" id="guests" value="">
+                </form>
                 <h2>Guest List:</h2>
                 <p>Total Seats Reserved: <i id ="total"></i></p>
                 
@@ -26,6 +29,8 @@
                             <th>Seats</th>
                             <th>Email</th>
                             </tr>
+                            
+                            
                     </table>
                             <h2>Not Coming:</h2>
                             <table id ="noGo" style="position: center; text-align: center">
@@ -47,25 +52,93 @@
             var totalSeats = 0;
             for(var i = 0; i < guests.length; i++){
                 var row = table.insertRow(i+1);
+                row.id = i;
                 var name = row.insertCell(0);
                 var seats = row.insertCell(1);
                 var email = row.insertCell(2);
-                var checkbox = row.insertCell(3);
                 name.innerHTML = guests[i].name;
+                name.id = "name" + i;
                 seats.innerHTML = guests[i].seats;
+                seats.id = "seats" + i;
                 totalSeats += parseInt(guests[i].seats);
                 email.innerHTML = guests[i].email;
-            }
+                email.id = "email" + i;
+                }
 
             var no = myObj["noGo"];
             var noGo = document.getElementById("noGo");
             for(i=0; i < no.length; i++){
                 var row = noGo.insertRow(i+1);
                 var name = row.insertCell(0);
+                name.id='noGo' + i;
                 name.innerHTML = no[i].name;
             }
+            document.getElementById("total").innerHTML = totalSeats;
+
+        var button = document.createElement("button");
+        var cancel = document.createElement("input");
+        var submit = document.createElement("input");
+        button.type = 'button';
+        button.value = 'Edit';
+        button.innerText='Edit Table Contents';
+        button.id = 'editTableButton';
+        submit.id = 'editSubmit';
+        submit.value = 'Submit';
+        submit.type = 'submit';
+        cancel.type = 'button';
+        cancel.id = 'cancel';
+        cancel.value='Cancel';
+        cancel.style = 'color: grey; border-color: red; display: inline; padding:.5%; float: right;';
+        submit.style = 'color: grey; border-color: green; display: inline; padding:.5%; float: right;';
+        cancel.style.display = 'none';
+        submit.style.display = 'none';
+        button.style = 'color: grey; border-color: whitesmoke; display: inline; padding:.5%; float: right;';
+        button.onclick = function(){
+            for(var i = 0; i < document.getElementById('table').rows.length - 1; i++){
+                document.getElementById('name'+i).innerHTML = "<input id ='inputName" + i+"' type='text' form='editTable' value='"+document.getElementById('name'+i).innerHTML+ "' />";
+                document.getElementById('seats'+i).innerHTML = "<input id ='inputSeats" + i+"' type='text' form='editTable' value='"+document.getElementById('seats'+i).innerHTML+ "' />";
+                document.getElementById('email'+i).innerHTML = "<input id ='inputEmail" + i+"' type='text' form='editTable' value='"+document.getElementById('email'+i).innerHTML+ "' />";
+            }
+            for(var i = 0; i<document.getElementById('noGo').rows.length-1; i++){
+                document.getElementById('noGo'+i).innerHTML = "<input id ='inputNoGoName" + i+"' type='text' form='editTable' value='"+document.getElementById('noGo'+i).innerHTML+ "' />";
+            }
+                document.getElementById('cancel').style.display = 'inline';
+                document.getElementById('editSubmit').style.display = 'inline';
+                document.getElementById('editTableButton').style.display = 'none';
+            };
+        cancel.onclick = function(){
+            for(var i = 0; i < guests.length; i++){
+                document.getElementById('name'+i).innerHTML = guests[i].name;
+                document.getElementById('seats'+i).innerHTML = guests[i].seats;
+                document.getElementById('email'+i).innerHTML = guests[i].email;
+                document.getElementById('cancel').style.display = 'none';
+                document.getElementById('editSubmit').style.display = 'none';
+                document.getElementById('editTableButton').style.display = 'block';
+            }
+            for(var i = 0; i<document.getElementById('noGo').rows.length-1; i++){
+                document.getElementById('noGo'+i).innerHTML = document.getElementById('inputNoGoName'+i).value;
+            }
+        };
+        submit.onclick = function(){
+            myObj = {'guests':'','guest':[],'noGo':[]};
+            
+            for(var i = 0; i < document.getElementById('table').rows.length - 1; i++){
+                var name = document.getElementById('inputName'+i).value;
+                var seats = document.getElementById('inputSeats'+i).value;
+                var email = document.getElementById('inputEmail'+i).value;
+                myObj["guest"].push({name: name, seats: seats, email: email});
+            }
+            
+            for(var i = 0; i < document.getElementById('noGo').rows.length - 1; i++){
+                myObj["noGo"].push({name: document.getElementById('inputNoGoName'+i).value});
+            }
+            document.getElementById('guests').value = JSON.stringify(myObj);
+            //alert(document.getElementById('guests').value);
+        };
+            document.getElementById('editTable').appendChild(submit);
+            document.getElementById('editTable').appendChild(cancel);
+            document.getElementById('editTable').appendChild(button);
         }
-        document.getElementById("total").innerHTML = totalSeats;
     }
     xmlhttp.open("GET", "/guests.json", true);
     xmlhttp.send();
