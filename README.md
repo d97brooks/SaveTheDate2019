@@ -9,7 +9,10 @@ I thought about adding an edit function to the admin portal, but since I will ha
 
 TODO:  (delete and edit buttons)
 _admin_page_:
-  delete - send index to server - > server removes index and updates json file
-  edit - send index and new field info - > server updates object at index with fields info.
+  delete - remove index and send server updated json file
+  add - add guest to either list
+  edit - edit json file locally and then sends to server for update.
+      __DONE__
   
   reminder - notify the server to send a reminder about the wedding to all the guests in the json file who submitted an email.
+    __DONE__: Email function added to admin page. 
