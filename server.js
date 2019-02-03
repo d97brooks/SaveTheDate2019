@@ -278,11 +278,8 @@ app.listen(8080, function(){
             fs.writeFile('guests.json', req.body.guests, function (err){
                 if(err) throw err;
             });
-                
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.write(req.body.guests);
-            res.end();
-        }
+            res.redirect("/admin");
+            }
     })
 
 });
