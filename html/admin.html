@@ -102,6 +102,7 @@
             var next = document.getElementById('table').rows.length;
             var row = document.getElementById('table').insertRow(next);
             next = next-1;
+            row.id = i;
             var name = row.insertCell(0);
             name.id = 'name' + next;
             var seats = row.insertCell(1);
@@ -110,14 +111,14 @@
             email.id = 'email' + next;
 
             name.innerHTML="<input id ='inputName" + next+"' type='text' form='editTable' value='"+document.getElementById('name'+next).innerHTML+ "' />";
-            seats.innerHTML="<input id ='inputSeats" + next+"' type='text' form='editTable' value='"+document.getElementById('seats'+next).innerHTML+ "' />";
+            seats.innerHTML="<input id ='inputSeats" + next+"' type='number' form='editTable' value='"+document.getElementById('seats'+next).innerHTML+ "' />";
             email.innerHTML="<input id ='inputEmail" + next+"' type='text' form='editTable' value='"+document.getElementById('email'+next).innerHTML+ "' />";
             
        }
         button.onclick = function(){
             for(var i = 0; i < document.getElementById('table').rows.length - 1; i++){
                 document.getElementById('name'+i).innerHTML = "<input id ='inputName" + i+"' type='text' form='editTable' value='"+document.getElementById('name'+i).innerHTML+ "' />";
-                document.getElementById('seats'+i).innerHTML = "<input id ='inputSeats" + i+"' type='text' form='editTable' value='"+document.getElementById('seats'+i).innerHTML+ "' />";
+                document.getElementById('seats'+i).innerHTML = "<input id ='inputSeats" + i+"' type='number' form='editTable' value='"+document.getElementById('seats'+i).innerHTML+ "' />";
                 document.getElementById('email'+i).innerHTML = "<input id ='inputEmail" + i+"' type='text' form='editTable' value='"+document.getElementById('email'+i).innerHTML+ "' />";
                 
             }
@@ -128,6 +129,7 @@
                 document.getElementById('editSubmit').style.display = 'inline';
                 document.getElementById('editTableButton').style.display = 'none';
                 document.getElementById('table').appendChild(add);
+                document.getElementById('addButton').style.display= 'inline';
                 // var row = document.getElementById('table').insertRow(document.getElementById('table').rows.length)
             };
         cancel.onclick = function(){
@@ -135,11 +137,19 @@
                 document.getElementById('name'+i).innerHTML = guests[i].name;
                 document.getElementById('seats'+i).innerHTML = guests[i].seats;
                 document.getElementById('email'+i).innerHTML = guests[i].email;
+            }
+            if(guests.length+1 < document.getElementById('table').rows.length){
+                var l = document.getElementById('table').rows.length;
+                var table = document.getElementById('table');
+                for(var i = l; i > guests.length+1; i--){
+                    table.deleteRow(i-1);
                 }
+            }
             
             for(var i = 0; i<document.getElementById('noGo').rows.length-1; i++){
-                document.getElementById('noGo'+i).innerHTML = document.getElementById('inputNoGoName'+i).value;
+                document.getElementById('noGo'+i).innerHTML = myObj["noGo"][i].name;
             }
+            document.getElementById('addButton').style.display = 'none';
             document.getElementById('cancel').style.display = 'none';
             document.getElementById('editSubmit').style.display = 'none';
             document.getElementById('editTableButton').style.display = 'block';
