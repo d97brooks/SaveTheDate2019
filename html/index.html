@@ -104,10 +104,10 @@ p {line-height: 2}
     <div class="w3-container w3-white w3-center">
       <h1 class="w3-wide">CAN YOU COME?</h1>
       <p>We really hope you can make it.</p>
-      <form id = "form" action="/RSVP" method="POST">
+      <form id = "form" onsubmit= "return validate()" action="/RSVP" method="POST">
         <input id = "name" class="w3-input w3-border" type="text" placeholder="Name(s)" name="name">
         <input id = "number" class="w3-input w3-border" type="number" min="0" max="2" placeholder="Number of attendees" name="number" />
-        <input id= "email" class="w3-input w3-border" type="email" placeholder="email@example.com  -  For a reminder!" name="email"/> 
+        <input id= "email" class="w3-input w3-border" type="email" placeholder="email@example.com  -  For a reminder!  -  Optional" name="email"/> 
         <i>If you need more seats than 2, please contact us :) Trying to fit all our loved ones in!</i>
       <p><i>Sincerely, Dalton & Lauren</i></p>
       <div class="w3-row">
@@ -124,6 +124,14 @@ p {line-height: 2}
   </div>
 </div>
 <script>
+function validate(){
+  if(document.getElementById('name').value != ''){
+    return true;
+  }else{
+    alert("Please enter your name");
+    return false;
+  }
+}
 function sanitizeAllFields(){
   // strip all html from input before sending to server
   document.getElementById("name").value = strip(document.getElementById("name").value);
