@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 let cookieParser = require('cookie-parser'); 
 var express = require("express");
 var app = express();
-const code = "XXXXXXXX"; // code that will go on the invitations
+const code = "LDDB2019"; // code that will go on the invitations
 const admin = "secret"; // my password to access admin page
 var nodemailer = require('nodemailer');
 const crypto = require('crypto'); // use to hash cookies
@@ -12,7 +12,7 @@ app.use(cookieParser());
 const secret = "another secret"; // used to hash codes
 const hash = crypto.createHmac('sha256', secret).update(code).digest('hex'); // cookie hash code
 const adminHash = crypto.createHmac('sha256', secret).update(admin).digest('hex'); // cookies hash admin
-
+var incorrectCode = "<style>*{margin-top: 10%; background-color: grey; text-align: center;}</style> <p>The code you entered was incorrect. Click <a href='/SaveTheDate2019#rsvp'> Here</a> to submit with the correct code. <br> If you lost the code, please contact me at dalbroo@siue.edu and I will send it to you. </p>";
 
 // send a thank you email...
 function rsvpResponse(address){
@@ -84,13 +84,13 @@ app.listen(8080, function(){
     // if they have a cookie from me, just redirect to home page
     app.get("/", function(req, res){
         // console.log('Cookies: ', req.cookies) testing
-        if(req.cookies.code == null){
-                res.redirect("/login");
-        }else{
-            if(req.cookies.code == hash){
-                res.redirect("/SaveTheDate2019")
-            }
-        }
+        //if(req.cookies.code === null){
+        //        res.redirect("/login");
+        //}else{
+          //  if(req.cookies.code === hash){
+                res.redirect("/SaveTheDate2019");
+            //}
+        //}
     })
     // serve 'login' page
     app.get("/login",function(req, res){
@@ -100,40 +100,36 @@ app.listen(8080, function(){
             res.end();  
         })
     })
-
-    // login submit -> validate and serve home
-    //              -> fail and resend login
-    // this checks the code and if correct gives them a cookie
-    // that way they dont have to login again
-    // cookie is not secure, but it doesnt really need to be here
-    // unless I actually decide to deploy this site, in which case
-    // I should probably everything more secure...
-    app.post("/login", function(req,res){
+    // TODO: remove login and read code from input
+   /* app.post("/login", function(req,res){
         if(req.body.code == code){
             res.cookie("code", hash);
             res.redirect("/SaveTheDate2019");   
         }else{
             res.redirect("/login");
         }
-    })
+    })*/
     // Home page
     app.get("/SaveTheDate2019", function(req,res){
-        if(req.cookies.code === hash || req.cookies.code === adminHash){
+
+        console.log("index.html served : " + Date(Date.now()).toLocaleString());
+        //if(req.cookies.code === hash || req.cookies.code === adminHash){
             fs.readFile("html/index.html", function(err, data){
                 res.writeHead(200, {'Content-Type': 'text/html'});
                 res.write(data);
                 res.end();   
               })
-        }else{
+        /*}else{
             fs.readFile("html/login.html", function(err, data){
                 res.writeHead(200, {'Content-Type': 'text/html'});
                 res.write(data);
                 res.end();   
               })
-        }
+        }*/
     })
     // ATTENDING
     app.post("/RSVP", function(req, res){
+        if(req.body.inviteCode === code){
         fs.readFile("guests.json", function(err, data){
             var json = JSON.parse(data);
             var guest = { name: req.body.name , seats: req.body.number, email: req.body.email };
@@ -153,10 +149,21 @@ app.listen(8080, function(){
         res.end();   
 
         //send a thankyou email
+
+        console.log("RSVP for " + req.body.name + " saved : " + Date(Date.now()).toLocaleString());
         rsvpResponse(req.body.email);
+        }else{
+            // Code entered wrong, do something here that notifies them besides sending them back to the page?
+            // res.redirect("/SaveTheDate2019#rsvp");
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(incorrectCode);
+            res.end();
+        }
     })
     // NOT ATTENDING
     app.post("/RSVP0", function(req, res){
+
+        if(req.body.inviteCode === code){
         // LOG NAME AND 'NOT ATTENDING' TO JSON DATA FILE | DONE!
         fs.readFile("guests.json", function(err, data){
             var json = JSON.parse(data);
@@ -172,6 +179,12 @@ app.listen(8080, function(){
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(str);
         res.end();   
+        console.log("RSVP for " + req.body.name + " saved : " + Date(Date.now()).toLocaleString());
+        }else{
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(incorrectCode);
+            res.end();
+        }
      })
      // Just serving images here for the page
     app.get("/first_image.jpg", function(req, res){
@@ -245,29 +258,35 @@ app.listen(8080, function(){
     // send a reminder to all guests who have an email address.
     // admin POST sends content of email, server responds with successful email data
     app.post("/reminder", function(req, res){
-        if(req.body.content != "" && req.body.subject != ""){
-            fs.readFile("guests.json", function(err, data){
-                var content = req.body.content;
-                var subject = req.body.subject;
-                var json = JSON.parse(data);
-                var guest = json["guest"];
-                var count = 0;
-                var total = guest.length;
-                for(var i = 0; i < guest.length; i++){
-                    var success = reminder(guest[i].email, subject, content);
-                    if(success === true){
-                        count++;
-                    }
-                }
-
-                res.writeHead(200, {'Content-Type': 'text/html'});
-                res.write("Successful emails sent: " + count + "/" + total + "<br>Note: Some people may have entered their email wrong or not entered one at all.");
-                res.end();
-            })
+        if(req.cookies.code == null){ 
+            res.redirect("/admin");
         }else{
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.write("Error: Subject or Contents of email was empty.");
-            res.end();
+            if(req.cookies.code === adminHash){ // make sure its from the admin
+                if(req.body.content != "" && req.body.subject != ""){
+                    fs.readFile("guests.json", function(err, data){
+                        var content = req.body.content;
+                        var subject = req.body.subject;
+                        var json = JSON.parse(data);
+                        var guest = json["guest"];
+                        var count = 0;
+                        var total = guest.length;
+                            for(var i = 0; i < guest.length; i++){
+                                var success = reminder(guest[i].email, subject, content);
+                                if(success === true){
+                                    count++;
+                                }
+                            }
+
+                        res.writeHead(200, {'Content-Type': 'text/html'});
+                        res.write("Successful emails sent: " + count + "/" + total + "<br>Note: Some people may have entered their email wrong or not entered one at all.");
+                        res.end();
+                    })
+                }else{
+                    res.writeHead(200, {'Content-Type': 'text/html'});
+                    res.write("Error: Subject or Contents of email was empty.");
+                    res.end();
+                }
+            }
         }
     })
 
