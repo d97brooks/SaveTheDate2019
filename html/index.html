@@ -85,6 +85,23 @@ p {line-height: 2}
         <p>Vault Room - 2nd floor</p>
         <p>750 N 16th St, St. Louis, MO</p>
       </div>
+      <div>
+       <h2>Rules</h2>
+        <ul style = 'margin-left: 10%; text-align: left;'>
+          <li>
+            No Cell Phones out during the ceremony. Period. We have a professional taking pictures for us. If you would like a set of photos after the wedding, we will be happy to provide them.
+          </li>
+          <li>
+            Bring casual clothes if you want to enjoy the venue. There will be a changing area.
+          </li>
+          <li>
+            You can come as early as you want! Have a blast at the museum on us!
+          </li>
+          <li>
+            Although you can come early, lateness will not be accepted. No one will be let in after the ceremony has started and will must wait until the ceremony is over.
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
@@ -94,7 +111,7 @@ p {line-height: 2}
   <h1>HOPE YOU CAN MAKE IT!</h1>
   <p class="w3-large">Kindly Respond By May 31st, 2019</p>
   <p class="w3-xlarge">
-    <button onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-round w3-red w3-opacity w3-hover-opacity-off" style="padding:8px 60px">RSVP</button>
+    <button onclick="document.getElementById('id01').style.display='block'; document.getElementById('exit').style.display = 'inline';" class="w3-button w3-round w3-red w3-opacity w3-hover-opacity-off" style="padding:8px 60px">RSVP</button>
   </p>
 </div>
 
@@ -102,17 +119,20 @@ p {line-height: 2}
 <div id="id01" class="w3-modal">
   <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="padding:32px;max-width:600px">
     <div class="w3-container w3-white w3-center">
+
+  <button id='exit' onclick="document.getElementById('id01').style.display='none'; this.style.display = 'none';" style='float: left; border-color: red; color: red; cursor: pointer;'>X</button>
       <h1 class="w3-wide">CAN YOU COME?</h1>
       <p>We really hope you can make it.</p>
       <form id = "form" onsubmit= "return validate()" action="/RSVP" method="POST">
         <input id = "name" class="w3-input w3-border" type="text" placeholder="Name(s)" name="name">
         <input id = "number" class="w3-input w3-border" type="number" min="0" max="2" placeholder="Number of attendees" name="number" />
-        <input id= "email" class="w3-input w3-border" type="email" placeholder="email@example.com  -  For a reminder!  -  Optional" name="email"/> 
-        <i>If you need more seats than 2, please contact us :) Trying to fit all our loved ones in!</i>
+        <input id = "email" class="w3-input w3-border" type="email" placeholder="email@example.com  -  For a reminder!  -  Optional" name="email"/> 
+        <input id = "inviteCode" class="w3-input w3-border" type="text" placeholder="CODE" name="inviteCode"/>
+        <i>If you need more than 2 seats, please contact us!<br> Trying to fit all our loved ones in!</i>
       <p><i>Sincerely, Dalton & Lauren</i></p>
       <div class="w3-row">
         <div class="w3-half">         
-          <input type="submit" class="w3-button w3-block w3-green" value="Going!" onclick="sanitizeAllFields()" />
+          <input type="submit" class="w3-button w3-block w3-green" value="Going!" onclick="sanitizeAllFields(); document.getElementById('form').action = 'RSVP';" />
           </form>
         </div>
         <div class="w3-half">
@@ -125,10 +145,10 @@ p {line-height: 2}
 </div>
 <script>
 function validate(){
-  if(document.getElementById('name').value != ''){
+  if(document.getElementById('name').value != '' && document.getElementById('inviteCode').value != '' && document.getElementById('number').value != ''){
     return true;
   }else{
-    alert("Please enter your name");
+    alert("Please enter all required fields");
     return false;
   }
 }
@@ -137,6 +157,8 @@ function sanitizeAllFields(){
   document.getElementById("name").value = strip(document.getElementById("name").value);
   document.getElementById("number").value = strip(document.getElementById("number").value);
   document.getElementById("email").value = strip(document.getElementById("email").value);
+  document.getElementById("inviteCode").value = strip(document.getElementById("inviteCode").value);
+  
 }
 // strip html from string
 function strip(html){
