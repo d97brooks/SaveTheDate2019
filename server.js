@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 let cookieParser = require('cookie-parser'); 
 var express = require("express");
 var app = express();
-const code = "LDDB2019"; // code that will go on the invitations
+const code = "XXXXXXXX"; // code that will go on the invitations
 const admin = "secret"; // my password to access admin page
 var nodemailer = require('nodemailer');
 const crypto = require('crypto'); // use to hash cookies
@@ -278,7 +278,7 @@ app.listen(8080, function(){
                             }
 
                         res.writeHead(200, {'Content-Type': 'text/html'});
-                        res.write("<style>*{background-color: black; font-color:lime;}</style>Successful emails sent: " + count + "/" + total + "<br>Note: Some people may have entered their email wrong or not entered one at all.");
+                        res.write("<style>*{background-color: black; color:lime;}</style>Successful emails sent: " + count + "/" + total + "<br>Note: Some people may have entered their email wrong or not entered one at all.");
                         res.end();
                     })
                 }else{
