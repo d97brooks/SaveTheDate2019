@@ -145,7 +145,7 @@ app.listen(8080, function(){
         str += "<br><br>Thanks for filling out the RSVP, " + req.body.name + "! It helps us a lot and we greatly appreciate it!";
         str += "<br> If you see anything wrong with the data you entered, contact me via email at dalbroo@siue.edu and I will gladly fix it for you."; 
         res.writeHead(200, {'Content-Type': 'text/html'});
-        res.write(str);
+        res.write("<style>*{background-color: #ffe7e7;}</style>"+str);
         res.end();   
 
         //send a thankyou email
@@ -174,7 +174,7 @@ app.listen(8080, function(){
             });
         })
         // Send thank you...
-        var str = "Thanks for filling out the RSVP, " + req.body.name + "! It helps us a lot and we greatly appreciate it!";
+        var str = "<style>*{background-color: #ffe7e7;}</style>Thanks for filling out the RSVP, " + req.body.name + "! It helps us a lot and we greatly appreciate it!";
         str += "<br>If plan's change and you are able to come, just contact me via email at dalbroo@siue.edu and I would gladly add you to the list!";
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(str);
@@ -278,12 +278,12 @@ app.listen(8080, function(){
                             }
 
                         res.writeHead(200, {'Content-Type': 'text/html'});
-                        res.write("Successful emails sent: " + count + "/" + total + "<br>Note: Some people may have entered their email wrong or not entered one at all.");
+                        res.write("<style>*{background-color: black; font-color:lime;}</style>Successful emails sent: " + count + "/" + total + "<br>Note: Some people may have entered their email wrong or not entered one at all.");
                         res.end();
                     })
                 }else{
                     res.writeHead(200, {'Content-Type': 'text/html'});
-                    res.write("Error: Subject or Contents of email was empty.");
+                    res.write("<style>*{background-color: black; color:lime;}</style>Error: Subject or Contents of email was empty.");
                     res.end();
                 }
             }
@@ -300,5 +300,18 @@ app.listen(8080, function(){
             res.redirect("/admin");
             }
     })
+
+    app.get("/admin.js", function(req, res){
+        if(req.cookies.code != adminHash){
+            res.redirect("/admin");
+        }else{
+            fs.readFile("admin.js", function(err, data){
+                res.writeHead(200, {'Content-Type': 'app/js'});
+                res.write(data);
+                res.end();  
+            })    
+        }
+    })
+    
 
 });
