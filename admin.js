@@ -9,13 +9,20 @@ var xmlhttp = new XMLHttpRequest();
                 var row = table.insertRow(i+1);
                 row.id = i;
                 var name = row.insertCell(0);
-                var seats = row.insertCell(1);
-                var email = row.insertCell(2);
+                var adults = row.insertCell(1);
+                var kids = row.insertCell(2);
+                var vegetarians = row.insertCell(3);
+                var email = row.insertCell(4);
+
                 name.innerHTML = guests[i].name;
                 name.id = "name" + i;
-                seats.innerHTML = guests[i].seats;
-                seats.id = "seats" + i;
-                totalSeats += parseInt(guests[i].seats);
+                adults.innerHTML = guests[i].adults;
+                adults.id = "adults" + i;
+                kids.innerHTML = guests[i].kids;
+                kids.id = "kids" + i;
+                vegetarians.innerHTML = guests[i].vegetarians;
+                vegetarians.id = "vegetarians" + i;
+                totalSeats += parseInt(parseInt(guests[i].adults) + parseInt(guests[i].kids));
                 email.innerHTML = guests[i].email;
                 email.id = "email" + i;
                 }
@@ -60,20 +67,29 @@ var xmlhttp = new XMLHttpRequest();
             row.id = i;
             var name = row.insertCell(0);
             name.id = 'name' + next;
-            var seats = row.insertCell(1);
-            seats.id = 'seats' + next;
-            var email = row.insertCell(2);
+            var adults = row.insertCell(1);
+            adults.id = 'adults' + next;
+            var kids = row.insertCell(2);
+            kids.id = 'kids' + next;
+            var vegetarians = row.insertCell(3);
+            vegetarians.id = 'vegetarians' + next;
+            var email = row.insertCell(4);
             email.id = 'email' + next;
 
             name.innerHTML="<input style='background-color: rgb(37, 37, 36); color: lime;' id ='inputName" + next+"' type='text' form='editTable' value='"+document.getElementById('name'+next).innerHTML+ "' />";
-            seats.innerHTML="<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputSeats" + next+"' type='number' form='editTable' value='"+document.getElementById('seats'+next).innerHTML+ "' />";
+            adults.innerHTML="<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputAdults" + next+"' type='number' form='editTable' value='"+document.getElementById('adults'+next).innerHTML+ "' />";
+            kids.innerHTML="<input style='background-color: rgb(37, 37, 36); color: lime;' id ='inputKids" + next+"' type='text' form='editTable' value='"+document.getElementById('kids'+next).innerHTML+ "' />";
+            vegetarians.innerHTML="<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputVegetarians" + next+"' type='number' form='editTable' value='"+document.getElementById('vegetarians'+next).innerHTML+ "' />";
             email.innerHTML="<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputEmail" + next+"' type='text' form='editTable' value='"+document.getElementById('email'+next).innerHTML+ "' />";
+            
             
        }
         button.onclick = function(){
             for(var i = 0; i < document.getElementById('table').rows.length - 1; i++){
                 document.getElementById('name'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputName" + i+"' type='text' form='editTable' value='"+document.getElementById('name'+i).innerHTML+ "' />";
-                document.getElementById('seats'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputSeats" + i+"' type='number' form='editTable' value='"+document.getElementById('seats'+i).innerHTML+ "' />";
+                document.getElementById('adults'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputAdults" + i+"' type='number' form='editTable' value='"+document.getElementById('adults'+i).innerHTML+ "' />";
+                document.getElementById('kids'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputKids" + i+"' type='number' form='editTable' value='"+document.getElementById('kids'+i).innerHTML+ "' />";
+                document.getElementById('vegetarians'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputVegetarians" + i+"' type='number' form='editTable' value='"+document.getElementById('vegetarians'+i).innerHTML+ "' />";
                 document.getElementById('email'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputEmail" + i+"' type='text' form='editTable' value='"+document.getElementById('email'+i).innerHTML+ "' />";
                 
             }
@@ -90,7 +106,9 @@ var xmlhttp = new XMLHttpRequest();
         cancel.onclick = function(){
             for(var i = 0; i < guests.length; i++){
                 document.getElementById('name'+i).innerHTML = guests[i].name;
-                document.getElementById('seats'+i).innerHTML = guests[i].seats;
+                document.getElementById('adults'+i).innerHTML = guests[i].adults;
+                document.getElementById('kids'+i).innerHTML = guests[i].kids;
+                document.getElementById('vegetarians'+i).innerHTML = guests[i].vegetarians;
                 document.getElementById('email'+i).innerHTML = guests[i].email;
             }
             if(guests.length+1 < document.getElementById('table').rows.length){
@@ -120,12 +138,24 @@ var xmlhttp = new XMLHttpRequest();
                     // remove from table
                     // i.e. just dont add on rebuild
                 }else{                
-                    var seats = document.getElementById('inputSeats'+i).value;
+                    var adults = document.getElementById('inputAdults'+i).value;
+                    var kids = document.getElementById('inputKids'+i).value;
+                    var vegetarians = document.getElementById('inputVegetarians'+i).value;
+                    if(adults == ""){
+                        adults = 0;
+                    }
+                    if(kids == ""){
+                        kids = 0;
+                    }
+                    if(vegetarians == ""){
+                        vegetarians = 0;
+                    }
+                    var seats = parseInt(adults) + parseInt(kids)
                     if(seats == "0" || seats == ""){
                         myObj["noGo"].push({name: name});
                     }else{
                         var email = document.getElementById('inputEmail'+i).value;
-                        myObj["guest"].push({name: name, seats: seats, email: email});
+                        myObj["guest"].push({name: name, adults: adults, kids: kids, vegetarians: vegetarians, email: email});
                     }
                 }
             }
