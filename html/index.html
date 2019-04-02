@@ -124,19 +124,21 @@ p {line-height: 2}
       <h1 class="w3-wide">CAN YOU COME?</h1>
       <p>We really hope you can make it.</p>
       <form id = "form" onsubmit= "return validate()" action="/RSVP" method="POST">
-        <input id = "name" class="w3-input w3-border" type="text" placeholder="Name(s)" name="name">
-        <input id = "number" class="w3-input w3-border" type="number" min="0" max="2" placeholder="Number of attendees" name="number" />
+        <input id = "name" class="w3-input w3-border" type="text" placeholder="Name(s)" name="name" oninvalid="this.setCustomValidity('We are gonna need your name!')" oninput="this.setCustomValidity('')" required>
+        <input id = "adults" onchange=changeMax() oninvalid="if (this.max > this.value){this.setCustomValidity('How many adults?')}else{this.setCustomValidity('Can only have a total of 4 seats')}" oninput="this.setCustomValidity('')" class="w3-input w3-border" type="number" min="0" max="4" placeholder="Number of Adults" name="adults" required/>
+        <input id = "kids" onchange=changeMax() oninvalid="if (this.max > this.value){this.setCustomValidity('How many kids?')}else{this.setCustomValidity('Can only have a total of 4 seats')} " oninput="this.setCustomValidity('')" class="w3-input w3-border" type="number" min="0" max="4" placeholder="Number of Children (0-12)" name="kids" required/>
+        <input id = "vegetarians" class="w3-input w3-border" oninvalid="if (this.max > this.value){this.setCustomValidity('Any vegetaians?')}else{this.setCustomValidity('Must be less than total attending.')}" oninput="this.setCustomValidity('')" type="number" min="0" max="4" placeholder="Number of Vegetarians" name="vegetarians" required/>
         <input id = "email" class="w3-input w3-border" type="email" placeholder="email@example.com  -  For a reminder!  -  Optional" name="email"/> 
-        <input id = "inviteCode" class="w3-input w3-border" type="text" placeholder="CODE" name="inviteCode"/>
-        <i>If you need more than 2 seats, please contact us!<br> Trying to fit all our loved ones in!</i>
+        <input id = "inviteCode" oninvalid="if (this.value == '') {this.setCustomValidity('Don\'t forget to enter the code!')}else{this.setCustomValidity('Invalid code')}" oninput="this.setCustomValidity('')" class="w3-input w3-border" type="text" placeholder="CODE" name="inviteCode" required/>
+        <i>If you need more than 4 seats, please contact us!<br> Trying to fit all our loved ones in!</i> 
       <p><i>Sincerely, Dalton & Lauren</i></p>
       <div class="w3-row">
         <div class="w3-half">         
-          <input type="submit" class="w3-button w3-block w3-green" value="Going!" onclick="sanitizeAllFields(); document.getElementById('form').action = 'RSVP';" />
+          <input type="submit" class="w3-button w3-block w3-green" value="Going!" onclick="sanitizeAllFields(); document.getElementById('form').action = '/RSVP';" />
           </form>
         </div>
         <div class="w3-half">
-          <input type="submit" onclick="sanitizeAllFields(); document.getElementById('number').value='0'; document.getElementById('form').action = 'RSVP0';" class="w3-button w3-block w3-red" value="Can't come" />
+          <input type="submit" onclick="sanitizeAllFields(); document.getElementById('form').action = '/RSVP0'; document.getElementById('adults').value='0'; document.getElementById('kids').value='0'; document.getElementById('vegetarians').value='0';" class="w3-button w3-block w3-red" value="Can't come" />
         </div>
       </form>
       </div>
@@ -144,18 +146,26 @@ p {line-height: 2}
   </div>
 </div>
 <script>
-function validate(){
-  if(document.getElementById('name').value != '' && document.getElementById('inviteCode').value != '' && document.getElementById('number').value != ''){
-    return true;
-  }else{
-    alert("Please enter all required fields");
-    return false;
+  
+  function changeMax(){
+    document.getElementById("kids").max = 4 - document.getElementById("adults").value;
+    document.getElementById("vegetarians").max = parseInt(document.getElementById("adults").value) + parseInt(document.getElementById("kids").value)
   }
-}
+
+// function validate(){
+
+//   if(document.getElementById('name').value != '' && document.getElementById('inviteCode').value != '' && document.getElementById('adults').value != ''){
+//     return true;
+//   }else{
+//     return false;
+//   }
+// }
 function sanitizeAllFields(){
   // strip all html from input before sending to server
   document.getElementById("name").value = strip(document.getElementById("name").value);
-  document.getElementById("number").value = strip(document.getElementById("number").value);
+  document.getElementById("adults").value = strip(document.getElementById("adults").value);
+  document.getElementById("kids").value = strip(document.getElementById("kids").value);
+  document.getElementById("vegetarians").value = strip(document.getElementById("vegetarians").value);
   document.getElementById("email").value = strip(document.getElementById("email").value);
   document.getElementById("inviteCode").value = strip(document.getElementById("inviteCode").value);
   
@@ -165,6 +175,9 @@ function strip(html){
    var doc = new DOMParser().parseFromString(html, 'text/html');
    return doc.body.textContent || "";
 }
+
+
+
 </script>
 <!-- Footer -->
 <footer class="w3-center w3-black w3-padding-16">
