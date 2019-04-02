@@ -1,29 +1,38 @@
 var fs = require("fs");
 var bodyParser = require('body-parser');
-let cookieParser = require('cookie-parser'); 
+var cookieParser = require('cookie-parser'); 
 var express = require("express");
-var app = express();
+var nodemailer = require('nodemailer');
+var crypto = require('crypto'); // use to hash cookies
+
+// secret information
 const code = "XXXXXXXX"; // code that will go on the invitations
 const admin = "secret"; // my password to access admin page
-var nodemailer = require('nodemailer');
-const crypto = require('crypto'); // use to hash cookies
+const myEmail = "me@gmail.com"
+const myPwd = "pwd"
+
+var app = express();
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(cookieParser());
+
+
 const secret = "another secret"; // used to hash codes
-const hash = crypto.createHmac('sha256', secret).update(code).digest('hex'); // cookie hash code
 const adminHash = crypto.createHmac('sha256', secret).update(admin).digest('hex'); // cookies hash admin
+
+
 var incorrectCode = "<style>*{margin-top: 10%; background-color: grey; text-align: center;}</style> <p>The code you entered was incorrect. Click <a href='/SaveTheDate2019#rsvp'> Here</a> to submit with the correct code. <br> If you lost the code, please contact me at dalbroo@siue.edu and I will send it to you. </p>";
 
+
+const PORT = 8080;
 // send a thank you email...
 function rsvpResponse(address){
     if(address == ""){
-        console.log("No Email Entered")
     }else{
         var transporter = nodemailer.createTransport({
         service: 'gmail',
             auth: {
-                user: 'me@gmail.com',
-                pass: 'pwd'
+                user: myEmail,
+                pass: myPwd
             }
         });
 
@@ -47,14 +56,13 @@ function rsvpResponse(address){
 function reminder(address, subject, content){
     var success = true;
     if(address == ""){
-        console.log("No Email Entered")
         success = false;
     }else{
         var transporter = nodemailer.createTransport({
         service: 'Gmail',
             auth: {
-                user: 'me@gmail.com',
-                pass: 'pwd'
+                user: myEmail,
+                pass: myPwd
             }
         });
     
@@ -77,69 +85,37 @@ function reminder(address, subject, content){
     return success;
 }
 
-// main!
-app.listen(8080, function(){
-    console.log("Server Running...");
+app.listen(PORT, function(){
+    console.log("HTTP Server Running on %s...", PORT);
     // initial landing -> login
     // if they have a cookie from me, just redirect to home page
     app.get("/", function(req, res){
-        // console.log('Cookies: ', req.cookies) testing
-        //if(req.cookies.code === null){
-        //        res.redirect("/login");
-        //}else{
-          //  if(req.cookies.code === hash){
-                res.redirect("/SaveTheDate2019");
-            //}
-        //}
+        res.redirect("/SaveTheDate2019");
     })
-    // serve 'login' page
-    app.get("/login",function(req, res){
-        fs.readFile("html/login.html", function(err, data){
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.write(data);
-            res.end();  
-        })
-    })
-    // TODO: remove login and read code from input
-   /* app.post("/login", function(req,res){
-        if(req.body.code == code){
-            res.cookie("code", hash);
-            res.redirect("/SaveTheDate2019");   
-        }else{
-            res.redirect("/login");
-        }
-    })*/
+    
     // Home page
     app.get("/SaveTheDate2019", function(req,res){
-
         console.log("index.html served : " + Date(Date.now()).toLocaleString());
-        //if(req.cookies.code === hash || req.cookies.code === adminHash){
             fs.readFile("html/index.html", function(err, data){
                 res.writeHead(200, {'Content-Type': 'text/html'});
                 res.write(data);
                 res.end();   
               })
-        /*}else{
-            fs.readFile("html/login.html", function(err, data){
-                res.writeHead(200, {'Content-Type': 'text/html'});
-                res.write(data);
-                res.end();   
-              })
-        }*/
     })
     // ATTENDING
     app.post("/RSVP", function(req, res){
         if(req.body.inviteCode === code){
         fs.readFile("guests.json", function(err, data){
             var json = JSON.parse(data);
-            var guest = { name: req.body.name , seats: req.body.number, email: req.body.email };
+            var guest = { name: req.body.name, adults: req.body.adults, kids: req.body.kids, vegetarians: req.body.vegetarians, email: req.body.email};
             json.guest.push(guest);
             fs.writeFile('guests.json', JSON.stringify(json), function (err){
                 if(err) throw err;
             });
         })
         var str = "Name: " + req.body.name;
-        str += "<br>Attending: " + req.body.number;
+        str += "<br>Adults: " + req.body.adults + " <br>Kids: " + req.body.kids;
+        str += "<br>Vegetarians: " + req.body.vegetarians;  
         if(req.body.email != "")
             str += "<br>Email: " + req.body.email;
         str += "<br><br>Thanks for filling out the RSVP, " + req.body.name + "! It helps us a lot and we greatly appreciate it!";
@@ -149,17 +125,22 @@ app.listen(8080, function(){
         res.end();   
 
         //send a thankyou email
-
-        console.log("RSVP for " + req.body.name + " saved : " + Date(Date.now()).toLocaleString());
         rsvpResponse(req.body.email);
+        
+        //log to console successful RSVP
+        console.log("RSVP for " + req.body.name + " saved : " + Date(Date.now()).toLocaleString());
+        
         }else{
+
             // Code entered wrong, do something here that notifies them besides sending them back to the page?
             // res.redirect("/SaveTheDate2019#rsvp");
             res.writeHead(200, {'Content-Type': 'text/html'});
             res.write(incorrectCode);
             res.end();
+
         }
     })
+
     // NOT ATTENDING
     app.post("/RSVP0", function(req, res){
 
@@ -179,7 +160,9 @@ app.listen(8080, function(){
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(str);
         res.end();   
-        console.log("RSVP for " + req.body.name + " saved : " + Date(Date.now()).toLocaleString());
+
+        console.log("NoRSVP for " + req.body.name + " saved : " + Date(Date.now()).toLocaleString());
+
         }else{
             res.writeHead(200, {'Content-Type': 'text/html'});
             res.write(incorrectCode);
@@ -237,11 +220,14 @@ app.listen(8080, function(){
                 res.write(data);
                 res.end();   
               })  
+              console.log("Successful ADMIN login: " + Date(Date.now()).toLocaleString());
         }else{
+            console.log("Failed ADMIN login: " + Date(Date.now()).toLocaleString());
             // entered wrong code. just redirecting back to the page
             res.redirect("/admin");
         }
     })
+
     // dont want anyone to have access to this besides admin
     app.get("/guests.json", function(req, res){
         if(req.cookies.code == null){
@@ -312,6 +298,8 @@ app.listen(8080, function(){
             })    
         }
     })
-    
+    app.get('*', function(req, res){
+        res.status(404).redirect("/SaveTheDate2019");
+      });
 
 });
