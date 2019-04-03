@@ -41,7 +41,7 @@ var xmlhttp = new XMLHttpRequest();
         var cancel = document.createElement("input");
         var submit = document.createElement("input");
         var add = document.createElement("button");
-        add.style = 'background-color: rgb(37, 37, 36); color: lime; border-color: whitesmoke; display: inline; padding:.5%; float: left;';
+        add.style = 'background-color: rgb(37, 37, 36); color: lime; border-color: lime; display: inline; padding:.5%; float: left;';
         add.value = "Add Guest";
         add.id = "addButton";
         add.innerText = "Add Guest";
@@ -56,10 +56,10 @@ var xmlhttp = new XMLHttpRequest();
         cancel.id = 'cancel';
         cancel.value='Cancel';
         cancel.style = 'background-color: rgb(37, 37, 36); color: red; border-color: red; display: inline; padding:.5%; float: right;';
-        submit.style = 'background-color: rgb(37, 37, 36); color: lime; border-color: green; display: inline; padding:.5%; float: right;';
+        submit.style = 'background-color: rgb(37, 37, 36); color: lime; border-color: lime; display: inline; padding:.5%; float: right;';
         cancel.style.display = 'none';
         submit.style.display = 'none';
-        button.style = 'background-color: rgb(37, 37, 36); color: lime; border-color: whitesmoke; display: inline; padding:.5%; float: right;';
+        button.style = 'background-color: rgb(37, 37, 36); color: whitesmoke; border-color: whitesmoke; display: inline; padding:.5%; float: right;';
         add.onclick = function(){
             var next = document.getElementById('table').rows.length;
             var row = document.getElementById('table').insertRow(next);
@@ -76,25 +76,25 @@ var xmlhttp = new XMLHttpRequest();
             var email = row.insertCell(4);
             email.id = 'email' + next;
 
-            name.innerHTML="<input style='background-color: rgb(37, 37, 36); color: lime;' id ='inputName" + next+"' type='text' form='editTable' value='"+document.getElementById('name'+next).innerHTML+ "' />";
-            adults.innerHTML="<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputAdults" + next+"' type='number' form='editTable' value='"+document.getElementById('adults'+next).innerHTML+ "' />";
-            kids.innerHTML="<input style='background-color: rgb(37, 37, 36); color: lime;' id ='inputKids" + next+"' type='text' form='editTable' value='"+document.getElementById('kids'+next).innerHTML+ "' />";
-            vegetarians.innerHTML="<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputVegetarians" + next+"' type='number' form='editTable' value='"+document.getElementById('vegetarians'+next).innerHTML+ "' />";
-            email.innerHTML="<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputEmail" + next+"' type='text' form='editTable' value='"+document.getElementById('email'+next).innerHTML+ "' />";
+            name.innerHTML="<input style='background-color: rgb(37, 37, 36); color: whitesmoke;' id ='inputName" + next+"' type='text' form='editTable' value='"+document.getElementById('name'+next).innerHTML+ "' />";
+            adults.innerHTML="<input style = 'background-color: rgb(37, 37, 36); color: whitesmoke;' id ='inputAdults" + next+"' type='number' form='editTable' value='"+document.getElementById('adults'+next).innerHTML+ "' />";
+            kids.innerHTML="<input style='background-color: rgb(37, 37, 36); color: whitesmoke;' id ='inputKids" + next+"' type='text' form='editTable' value='"+document.getElementById('kids'+next).innerHTML+ "' />";
+            vegetarians.innerHTML="<input style = 'background-color: rgb(37, 37, 36); color: whitesmoke;' id ='inputVegetarians" + next+"' type='number' form='editTable' value='"+document.getElementById('vegetarians'+next).innerHTML+ "' />";
+            email.innerHTML="<input style = 'background-color: rgb(37, 37, 36); color: whitesmoke;' id ='inputEmail" + next+"' type='text' form='editTable' value='"+document.getElementById('email'+next).innerHTML+ "' />";
             
             
        }
         button.onclick = function(){
             for(var i = 0; i < document.getElementById('table').rows.length - 1; i++){
-                document.getElementById('name'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputName" + i+"' type='text' form='editTable' value='"+document.getElementById('name'+i).innerHTML+ "' />";
-                document.getElementById('adults'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputAdults" + i+"' type='number' form='editTable' value='"+document.getElementById('adults'+i).innerHTML+ "' />";
-                document.getElementById('kids'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputKids" + i+"' type='number' form='editTable' value='"+document.getElementById('kids'+i).innerHTML+ "' />";
-                document.getElementById('vegetarians'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputVegetarians" + i+"' type='number' form='editTable' value='"+document.getElementById('vegetarians'+i).innerHTML+ "' />";
-                document.getElementById('email'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputEmail" + i+"' type='text' form='editTable' value='"+document.getElementById('email'+i).innerHTML+ "' />";
+                document.getElementById('name'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: whitesmoke;' id ='inputName" + i+"' type='text' form='editTable' value='"+document.getElementById('name'+i).innerHTML+ "' />";
+                document.getElementById('adults'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: whitesmoke;' id ='inputAdults" + i+"' type='number' form='editTable' value='"+document.getElementById('adults'+i).innerHTML+ "' />";
+                document.getElementById('kids'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: whitesmoke;' id ='inputKids" + i+"' type='number' form='editTable' value='"+document.getElementById('kids'+i).innerHTML+ "' />";
+                document.getElementById('vegetarians'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: whitesmoke;' id ='inputVegetarians" + i+"' type='number' form='editTable' value='"+document.getElementById('vegetarians'+i).innerHTML+ "' />";
+                document.getElementById('email'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: whitesmoke;' id ='inputEmail" + i+"' type='text' form='editTable' value='"+document.getElementById('email'+i).innerHTML+ "' />";
                 
             }
             for(var i = 0; i<document.getElementById('noGo').rows.length-1; i++){
-                document.getElementById('noGo'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: lime;' id ='inputNoGoName" + i+"' type='text' form='editTable' value='"+document.getElementById('noGo'+i).innerHTML+ "' />";
+                document.getElementById('noGo'+i).innerHTML = "<input style = 'background-color: rgb(37, 37, 36); color: whitesmoke;' id ='inputNoGoName" + i+"' type='text' form='editTable' value='"+document.getElementById('noGo'+i).innerHTML+ "' />";
             }
                 document.getElementById('cancel').style.display = 'inline';
                 document.getElementById('editSubmit').style.display = 'inline';
