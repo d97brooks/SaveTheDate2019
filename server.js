@@ -47,7 +47,7 @@ function rsvpResponse(address){
             if (error) {
                 console.log(error);
             } else {
-                console.log('Email sent: ' + info.response);
+                console.log('Email sent to '+ address + ': ' + info.response);
             }
         });
     }
@@ -84,9 +84,15 @@ function reminder(address, subject, content){
     }
     return success;
 }
+function log(data){
+    console.log(data)
+    fs.appendFile('logs.log', data, function (err) {
+        if (err) throw err;
+      });
+}
 
 app.listen(PORT, function(){
-    console.log("HTTP Server Running on %s...", PORT);
+    log("HTTP Server Running on " + PORT + "...");
     // initial landing -> login
     // if they have a cookie from me, just redirect to home page
     app.get("/", function(req, res){
@@ -95,7 +101,7 @@ app.listen(PORT, function(){
     
     // Home page
     app.get("/SaveTheDate2019", function(req,res){
-        console.log("index.html served : " + Date(Date.now()).toLocaleString());
+        log("index.html served : " + req.ip + " - " + Date(Date.now()).toLocaleString());
             fs.readFile("html/index.html", function(err, data){
                 res.writeHead(200, {'Content-Type': 'text/html'});
                 res.write(data);
@@ -128,7 +134,7 @@ app.listen(PORT, function(){
         rsvpResponse(req.body.email);
         
         //log to console successful RSVP
-        console.log("RSVP for " + req.body.name + " saved : " + Date(Date.now()).toLocaleString());
+        log("RSVP for " + req.body.name + " saved : " + Date(Date.now()).toLocaleString());
         
         }else{
 
@@ -161,7 +167,7 @@ app.listen(PORT, function(){
         res.write(str);
         res.end();   
 
-        console.log("NoRSVP for " + req.body.name + " saved : " + Date(Date.now()).toLocaleString());
+        log("NoRSVP for " + req.body.name + " saved : " + Date(Date.now()).toLocaleString());
 
         }else{
             res.writeHead(200, {'Content-Type': 'text/html'});
@@ -220,9 +226,9 @@ app.listen(PORT, function(){
                 res.write(data);
                 res.end();   
               })  
-              console.log("Successful ADMIN login: " + Date(Date.now()).toLocaleString());
+              log("Successful ADMIN login: " + req.ip + " - " + Date(Date.now()).toLocaleString());
         }else{
-            console.log("Failed ADMIN login: " + Date(Date.now()).toLocaleString());
+            log("Failed ADMIN login: " + req.ip + " - "+ Date(Date.now()).toLocaleString());
             // entered wrong code. just redirecting back to the page
             res.redirect("/admin");
         }
