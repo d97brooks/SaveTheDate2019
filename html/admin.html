@@ -5,16 +5,16 @@
         <title>Save The Date Login</title>
         
     </head>
-    <body style="background-color: black; color:lime; margin: 2%;">
+    <body style="background-color: black; color:whitesmoke; margin: 2%;">
         <main>
                 <div style="margin-top: 10%; position: left; text-align: left">
-                <button id = "reminder" style = "float: right; background-color: rgb(37, 37, 36); color: lime; border-color: whitesmoke; padding: .5%; margin-bottom: .5%;" onclick="document.getElementById('emailContent').style.display = 'block'; document.getElementById('emailSubmit').style.display = 'inline'; document.getElementById('emailCancel').style.display = 'inline'; style.display='none';">Compose Reminder Email</button>
+                <button id = "reminder" style = "float: right; background-color: rgb(37, 37, 36); color: whitesmoke; border-color: whitesmoke; padding: .5%; margin-bottom: .5%;" onclick="document.getElementById('emailContent').style.display = 'block'; document.getElementById('emailSubmit').style.display = 'inline'; document.getElementById('emailCancel').style.display = 'inline'; style.display='none';">Compose Reminder Email</button>
                 <form onsubmit="return confirm('Are you sure you want to send?\nSubject: ' + document.getElementById('subject').value + '\n' + document.getElementById('content').value)" style = "display: none; margin-left: 2%;" id="emailContent" action="/reminder" method="POST">
                     <h3 style="margin-left: -2%;">Email Reminder:</h3>
-                    <input sytle="background-color: rgb(37, 37, 36); color: lime;" id="subject" name="subject" placeholder="Subject:" type="text" /><br>
-                    <textarea style = "background-color: rgb(37, 37, 36); color: lime; border-color: gray;" name = "content" id ="content" rows="20" cols="70"></textarea><br>         
+                    <input sytle="background-color: rgb(37, 37, 36); color: whitesmoke;" id="subject" name="subject" placeholder="Subject:" type="text" /><br>
+                    <textarea style = "background-color: rgb(37, 37, 36); color: whitesmoke; border-color: gray;" name = "content" id ="content" rows="20" cols="70"></textarea><br>         
                 </form>
-                <input id="emailSubmit" form="emailContent" style = "display: none; background-color: rgb(37, 37, 36); color: lime; border-color: green; padding: .5%; margin-bottom: .5%; margin-left: 2%;" type="submit" name="submit" value="Send" />
+                <input id="emailSubmit" form="emailContent" style = "display: none; background-color: rgb(37, 37, 36); color: lime; border-color: lime; padding: .5%; margin-bottom: .5%; margin-left: 2%;" type="submit" name="submit" value="Send" />
                 <button id = "emailCancel" style="display: none; background-color: rgb(37, 37, 36); color: red; border-color: red; padding: .5%; margin-bottom: .5%;" onclick="document.getElementById('emailContent').style.display = 'none'; document.getElementById('emailSubmit').style.display = 'none'; style.display = 'none'; document.getElementById('reminder').style.display = 'inline';" >Cancel</button>
                 
                 <form name="editTable" id="editTable" method="POST" action="/update" onsubmit="return confirm('Are you sure you want to send these updates?')">
